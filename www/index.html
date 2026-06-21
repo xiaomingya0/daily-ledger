@@ -145,21 +145,210 @@ else if(e._t==="evt"){let c=e.category||"",d=CC[c]||"#94a3b8",m=e.loc?"📍"+esc
 else{let c=e.category||"",s=e.status==="done",m=e.loc?"📍"+esc(e.loc):"";if(e.time)m+=(e.loc?" ":"")+"🕐"+esc(e.time);h+="<div class=\"entry\" data-id=\""+e.id+"\"><div class=\"ei p\">📌</div><div class=\"eb\"><div class=\"et\"><span class=\"bd p\">"+esc(c)+"</span><span class=\"es "+(s?"d":"p")+"\" style=\"margin-left:auto\">"+(s?"✓ 已完成":"⏳ 待做")+"</span></div><div class=\"etl\">"+esc(e.title||"")+"</div>"+(m?"<div class=\"em\">"+m+"</div>":"")+"</div></div>"}});document.getElementById("content").innerHTML=h}
 function rs(){let s=cs();let txn=data.transactions.filter(t=>!fm||(t.date&&t.date.startsWith(fm)));let ec={},ic={};txn.forEach(t=>{let c=t.category||"其他",a=Number(t.amount)||0;if(t.type==="expense")ec[c]=(ec[c]||0)+a;else ic[c]=(ic[c]||0)+a});let et=s.expense,it=s.income;let pt=data.plans.filter(p=>!fm||(p.date&&p.date.startsWith(fm))).length;let pd=data.plans.filter(p=>p.status==="done"&&(!fm||(p.date&&p.date.startsWith(fm)))).length;let h="<div class=\"sg\"><div class=\"sc\"><div style=\"font-size:.68rem;color:#64748b\">收入</div><div class=\"v g\">¥"+fn(it)+"</div></div><div class=\"sc\"><div style=\"font-size:.68rem;color:#64748b\">支出</div><div class=\"v r\">¥"+fn(et)+"</div></div><div class=\"sc\"><div style=\"font-size:.68rem;color:#64748b\">余额</div><div class=\"v\" style=\"color:"+(s.balance>=0?"#10b981":"#ef4444")+"\">¥"+fn(s.balance)+"</div></div><div class=\"sc\"><div style=\"font-size:.68rem;color:#64748b\">计划完成</div><div class=\"v p\">"+pd+"/"+pt+"</div></div></div>";let mc=["#ef4444","#f97316","#eab308","#22c55e","#3b82f6","#8b5cf6","#ec4899","#14b8a6","#6366f1","#94a3b8"];h+="<div class=\"bk\"><div class=\"bt\">支出分类</div>";if(et>0){Object.entries(ec).sort((a,b)=>b[1]-a[1]).forEach(([cat,amt],i)=>{let p=(amt/et*100).toFixed(1);h+="<div class=\"br\"><span class=\"dot\" style=\"background:"+mc[i%mc.length]+"\"></span>"+cat+"<span class=\"ba\">¥"+fn(amt)+"</span><span class=\"bp\">"+p+"%</span></div>"})}else h+="<p style=\"font-size:.82rem;color:#94a3b8;padding:4px 0\">暂无支出</p>";h+="</div>";h+="<div class=\"bk\"><div class=\"bt\">收入分类</div>";if(it>0){Object.entries(ic).sort((a,b)=>b[1]-a[1]).forEach(([cat,amt])=>{let p=(amt/it*100).toFixed(1);h+="<div class=\"br\"><span class=\"dot\" style=\"background:#10b981\"></span>"+cat+"<span class=\"ba\">¥"+fn(amt)+"</span><span class=\"bp\">"+p+"%</span></div>"})}else h+="<p style=\"font-size:.82rem;color:#94a3b8;padding:4px 0\">暂无收入</p>";h+="</div>";document.getElementById("content").innerHTML=h}
 document.addEventListener("DOMContentLoaded",function(){ep();data=ld();if(!fm)fm=tm();document.getElementById("mf").value=fm;
-document.getElementById("navTabs").addEventListener("click",function(e){let btn=e.target.closest(".nt button");if(!btn)return;document.querySelectorAll(".nt button").forEach(t=>t.classList.remove("a"));btn.classList.add("a");view=btn.dataset.v;ra()});
-document.getElementById("tf").addEventListener("click",function(e){let btn=e.target.closest(".sg button");if(!btn)return;document.querySelectorAll("#tf button").forEach(b=>b.classList.remove("a"));btn.classList.add("a");ft=btn.dataset.f;ra()});
-document.getElementById("mf").addEventListener("change",function(){fm=document.getElementById("mf").value;ra()});
-document.getElementById("btnAdd").addEventListener("click",function(){document.getElementById("modal").classList.add("open");document.getElementById("form").reset();document.getElementById("fEditId").value="";document.getElementById("fDate").value=ts();document.getElementById("modalTitle").textContent="添加记录";document.getElementById("fSubmit").textContent="添加"});
-document.getElementById("modal").addEventListener("click",function(e){if(e.target.classList.contains("mo"))document.getElementById("modal").classList.remove("open")});
-document.getElementById("typeToggle").addEventListener("click",function(e){let btn=e.target.closest(".tt button");if(!btn)return;document.querySelectorAll("#typeToggle button").forEach(b=>b.className=b.dataset.t===btn.dataset.t?"ta":"tn");let t=btn.dataset.t;if(t==="event"||t==="plan"){document.getElementById("txnFields").style.display="none";document.getElementById("evtFields").style.display="block"}else{document.getElementById("txnFields").style.display="block";document.getElementById("evtFields").style.display="none"}});
-document.getElementById("form").addEventListener("submit",function(e){e.preventDefault();let tp=document.querySelector("#typeToggle .ta");tp=tp?tp.dataset.t:"expense";let dt=document.getElementById("fDate").value;let tm2=document.getElementById("fTime").value;let eid=document.getElementById("fEditId").value;
+var elnavTabs=document.getElementById("navTabs");if(elnavTabs)elnavTabs.addEventListener("click",function(e){let btn=e.target.closest(".nt button");if(!btn)return;document.querySelectorAll(".nt button").forEach(t=>t.classList.remove("a"));btn.classList.add("a");view=btn.dataset.v;ra()});
+var eltf=document.getElementById("tf");if(eltf)eltf.addEventListener("click",function(e){let btn=e.target.closest(".sg button");if(!btn)return;document.querySelectorAll("#tf button").forEach(b=>b.classList.remove("a"));btn.classList.add("a");ft=btn.dataset.f;ra()});
+var elmf=document.getElementById("mf");if(elmf)elmf.addEventListener("change",function(){fm=document.getElementById("mf").value;ra()});
+var elbtnAdd=document.getElementById("btnAdd");if(elbtnAdd)elbtnAdd.addEventListener("click",function(){document.getElementById("modal").classList.add("open");document.getElementById("form").reset();document.getElementById("fEditId").value="";document.getElementById("fDate").value=ts();document.getElementById("modalTitle").textContent="添加记录";document.getElementById("fSubmit").textContent="添加"});
+var elmodal=document.getElementById("modal");if(elmodal)elmodal.addEventListener("click",function(e){if(e.target.classList.contains("mo"))document.getElementById("modal").classList.remove("open")});
+var eltypeToggle=document.getElementById("typeToggle");if(eltypeToggle)eltypeToggle.addEventListener("click",function(e){let btn=e.target.closest(".tt button");if(!btn)return;document.querySelectorAll("#typeToggle button").forEach(b=>b.className=b.dataset.t===btn.dataset.t?"ta":"tn");let t=btn.dataset.t;if(t==="event"||t==="plan"){document.getElementById("txnFields").style.display="none";document.getElementById("evtFields").style.display="block"}else{document.getElementById("txnFields").style.display="block";document.getElementById("evtFields").style.display="none"}});
+var elform=document.getElementById("form");if(elform)elform.addEventListener("submit",function(e){e.preventDefault();let tp=document.querySelector("#typeToggle .ta");tp=tp?tp.dataset.t:"expense";let dt=document.getElementById("fDate").value;let tm2=document.getElementById("fTime").value;let eid=document.getElementById("fEditId").value;
 if(tp==="event"||tp==="plan"){let obj={title:document.getElementById("fTitle").value.trim(),category:document.getElementById("fEvtCat").value,loc:document.getElementById("fLoc").value.trim(),description:document.getElementById("fDesc").value.trim(),date:dt,time:tm2};if(tp==="plan")obj.status="pending";if(eid){if(tp==="event"){let i=data.events.findIndex(x=>x.id===eid);if(i>-1){Object.assign(data.events[i],obj);sd(data)}}else{let i=data.plans.findIndex(x=>x.id===eid);if(i>-1){Object.assign(data.plans[i],obj);sd(data)}}}else{obj.id=gi();obj.createdAt=Date.now();if(tp==="event")data.events.push(obj);else data.plans.push(obj);sd(data)}}
 else{let obj={type:tp,amount:parseFloat(document.getElementById("fAmt").value)||0,category:document.getElementById("fCat").value,note:document.getElementById("fNote").value.trim(),date:dt,time:tm2};if(eid){let i=data.transactions.findIndex(x=>x.id===eid);if(i>-1){Object.assign(data.transactions[i],obj);sd(data)}}else{obj.id=gi();obj.createdAt=Date.now();data.transactions.push(obj);sd(data)}}
 document.getElementById("modal").classList.remove("open");ra()});
-document.getElementById("btnBackup").addEventListener("click",function(){let b=new Blob([JSON.stringify({version:1,exportedAt:Date.now(),data:data},null,2)],{type:"application/json"});let u=URL.createObjectURL(b);let a=document.createElement("a");a.href=u;a.download="流水账_"+ts()+".json";a.click();URL.revokeObjectURL(u)});
+var elbtnBackup=document.getElementById("btnBackup");if(elbtnBackup)elbtnBackup.addEventListener("click",function(){let b=new Blob([JSON.stringify({version:1,exportedAt:Date.now(),data:data},null,2)],{type:"application/json"});let u=URL.createObjectURL(b);let a=document.createElement("a");a.href=u;a.download="流水账_"+ts()+".json";a.click();URL.revokeObjectURL(u)});
 let fCat=document.getElementById("fCat");fCat.innerHTML=CE.map(c=>"<option value=\""+c+"\">"+c+"</option>").join("");
 let fEvt=document.getElementById("fEvtCat");fEvt.innerHTML=CV.map(c=>"<option value=\""+c+"\">"+c+"</option>").join("");
 ra();
 });
-</script>
-</body>
+
+
+// 条目点击事件（编辑/删除/完成）
+var elcontent=document.getElementById("content");if(elcontent)elcontent.addEventListener("click", function(e) {
+  let entry = e.target.closest(".entry");
+  if (!entry) return;
+  let id = entry.dataset.id;
+  let type = entry.dataset.t;
+  let btn = e.target.closest("span");
+  if (!btn) return;
+  let txt = btn.textContent.trim();
+  if (txt === "\u2716" || txt === "\u2715" || txt === "\u00d7" || txt === "\u2718") {
+    if (!confirm("\u786e\u5b9a\u5220\u9664\uff1f")) return;
+    if (type === "txn") { data.transactions = data.transactions.filter(x => x.id !== id); sd(data); }
+    else if (type === "evt") { data.events = data.events.filter(x => x.id !== id); sd(data); }
+    else { data.plans = data.plans.filter(x => x.id !== id); sd(data); }
+    ra();
+  } else if (txt === "\u2714" || txt === "\u2713" || txt === "\u2714\ufe0f" || txt === "\u2713\ufe0f" || txt === "\u271a" || txt === "\u2705" || txt.indexOf("\u2713") >= 0 || txt === "\u2714" || txt.indexOf("\u2714") >= 0 || txt.indexOf("\u2713") >= 0) {
+    if (type === "pln") { let p = data.plans.find(x => x.id === id); if (p) { p.status = "done"; sd(data); ra(); } }
+  } else if (txt === "\u270e" || txt === "\u2711" || txt.indexOf("\u270e") >= 0 || txt.indexOf("\u2711") >= 0) {
+    if (type === "txn") { let x = data.transactions.find(e => e.id === id); if (x) { document.getElementById("modal").classList.add("open"); document.getElementById("form").reset(); document.getElementById("fEditId").value = id; document.getElementById("fDate").value = x.date || ts(); document.getElementById("fTime").value = x.time || ""; document.getElementById("modalTitle").textContent = "\u7f16\u8f91"; document.getElementById("fSubmit").textContent = "\u4fdd\u5b58"; document.getElementById("fAmt").value = x.amount; document.getElementById("fCat").value = x.category || ""; document.getElementById("fNote").value = x.note || ""; } }
+    else if (type === "evt") { let x = data.events.find(e => e.id === id); if (x) { document.getElementById("modal").classList.add("open"); document.getElementById("form").reset(); document.getElementById("fEditId").value = id; document.getElementById("fDate").value = x.date || ts(); document.getElementById("fTime").value = x.time || ""; document.getElementById("modalTitle").textContent = "\u7f16\u8f91"; document.getElementById("fSubmit").textContent = "\u4fdd\u5b58"; document.getElementById("fTitle").value = x.title || ""; document.getElementById("fEvtCat").value = x.category || ""; document.getElementById("fLoc").value = x.loc || ""; document.getElementById("fDesc").value = x.description || ""; if (type === "evt") { document.getElementById("txnFields").style.display = "none"; document.getElementById("evtFields").style.display = "block"; } } }
+    else { let x = data.plans.find(e => e.id === id); if (x) { document.getElementById("modal").classList.add("open"); document.getElementById("form").reset(); document.getElementById("fEditId").value = id; document.getElementById("fDate").value = x.date || ts(); document.getElementById("fTime").value = x.time || ""; document.getElementById("modalTitle").textContent = "\u7f16\u8f91"; document.getElementById("fSubmit").textContent = "\u4fdd\u5b58"; document.getElementById("fTitle").value = x.title || ""; document.getElementById("fEvtCat").value = x.category || ""; document.getElementById("fLoc").value = x.loc || ""; document.getElementById("fDesc").value = x.description || ""; document.getElementById("txnFields").style.display = "none"; document.getElementById("evtFields").style.display = "block"; } }
+  }
+});
+
+// 分类切换
+var eltypeToggle=document.getElementById("typeToggle");if(eltypeToggle)eltypeToggle.addEventListener("click", function(e) {
+  let btn = e.target.closest(".tt button");
+  if (!btn) return;
+  document.querySelectorAll("#typeToggle button").forEach(b => b.className = b.dataset.t === btn.dataset.t ? "ta" : "tn");
+  let t = btn.dataset.t;
+  if (t === "event" || t === "plan") {
+    document.getElementById("txnFields").style.display = "none";
+    document.getElementById("evtFields").style.display = "block";
+  } else {
+    document.getElementById("txnFields").style.display = "block";
+    document.getElementById("evtFields").style.display = "none";
+    let cats = t === "income" ? CI : CE;
+    document.getElementById("fCat").innerHTML = cats.map(c => "<option value=\""+c+"\">"+c+"</option>").join("");
+  }
+});
+
+// 账号管理
+var elprofileBtn=document.getElementById("profileBtn");if(elprofileBtn)elprofileBtn.addEventListener("click", function() {
+  let ps = gp();
+  let cur = gc();
+  let h = ps.map(p => {
+    let isCur = p.id === cur;
+    return "<div class=\"pli\"><span class=\"pn\">" + esc(p.name) + (isCur ? "<small>\u5f53\u524d</small>" : "") + "</span>"
+      + (isCur ? "" : "<span onclick=\"sc('"+p.id+"');location.reload()\" style=\"cursor:pointer;color:#2563eb;font-size:.82rem\">\u5207\u6362</span>")
+      + (ps.length > 1 && !isCur ? "<span onclick=\"var ps=gp();if(ps.length>1&&confirm('\u786e\u5b9a\u5220\u9664\uff1f')){ps=ps.filter(x=>x.id!='"+p.id+"');sp(ps);localStorage.removeItem('lsz_data_"+p.id+"');if(gc()=='"+p.id+"')sc(ps[0].id);location.reload()}\" style=\"color:#ef4444;cursor:pointer;font-size:.82rem;margin-left:6px\">\u2716</span>" : "") + "</div>";
+  }).join("");
+  document.getElementById("profileList").innerHTML = h;
+  document.getElementById("profilePanel").classList.add("open");
+});
+var elprofilePanel=document.getElementById("profilePanel");if(elprofilePanel)elprofilePanel.addEventListener("click", function(e) {
+  if (e.target.classList.contains("pr")) document.getElementById("profilePanel").classList.remove("open");
+});
+var elbtnAddProfile=document.getElementById("btnAddProfile");if(elbtnAddProfile)elbtnAddProfile.addEventListener("click", function() {
+  let inp = document.getElementById("newProfileName");
+  if (!inp.value.trim()) return;
+  let id = gi();
+  let ps = gp();
+  ps.push({ id: id, name: inp.value.trim(), createdAt: Date.now() });
+  sp(ps);
+  sc(id);
+  sd(id, { transactions: [], events: [], plans: [] });
+  location.reload();
+});
+var elbtnImport=document.getElementById("btnImport");if(elbtnImport)elbtnImport.addEventListener("click", function() {
+  document.getElementById("fileInput").click();
+});
+var elfileInput=document.getElementById("fileInput");if(elfileInput)elfileInput.addEventListener("change", function(e) {
+  if (!e.target.files.length) return;
+  let r = new FileReader();
+  r.onload = function(ev) {
+    try {
+      let j = JSON.parse(ev.target.result);
+      if (j.data) { data = j.data; sd(data); ra(); alert("\u5bfc\u5165\u6210\u529f\uff01"); } else { alert("\u6587\u4ef6\u683c\u5f0f\u4e0d\u5bf9"); }
+    } catch(ex) { alert("\u5bfc\u5165\u5931\u8d25\uff1a" + ex.message); }
+  };
+  r.readAsText(e.target.files[0]);
+});
+
+document.addEventListener("DOMContentLoaded", function() {
+  // 条目点击事件
+  var el=document.getElementById("content");if(el)el.addEventListener("click", function(e) {
+    var entry = e.target.closest(".entry");
+    if (!entry) return;
+    var id = entry.dataset.id;
+    var type = entry.dataset.t;
+    var txt = e.target.textContent.trim();
+    if (txt === "\u2716" || txt === "\u2715" || txt.indexOf("\u2715") >= 0 || txt.indexOf("\u2716") >= 0) {
+      if (!confirm("确定删除？")) return;
+      if (type === "txn") { data.transactions = data.transactions.filter(function(x) { return x.id !== id; }); sd(data); }
+      else if (type === "evt") { data.events = data.events.filter(function(x) { return x.id !== id; }); sd(data); }
+      else { data.plans = data.plans.filter(function(x) { return x.id !== id; }); sd(data); }
+      ra(); return;
+    }
+    if (txt === "\u2713" || txt.indexOf("\u2713") >= 0 || txt === "\u2714" || txt.indexOf("\u2714") >= 0) {
+      if (type === "pln") { var p = data.plans.find(function(x) { return x.id === id; }); if (p) { p.status = "done"; sd(data); ra(); } }
+      return;
+    }
+    if (txt === "\u270e" || txt.indexOf("\u270e") >= 0) {
+      if (type === "txn") { var x = data.transactions.find(function(e2) { return e2.id === id; }); if (x) editModal(x, "txn"); }
+      else if (type === "evt") { var x = data.events.find(function(e2) { return e2.id === id; }); if (x) editModal(x, "evt"); }
+      else { var x = data.plans.find(function(e2) { return e2.id === id; }); if (x) editModal(x, "pln"); }
+      return;
+    }
+  });
+  function editModal(x, t) {
+    document.getElementById("modal").classList.add("open");
+    document.getElementById("form").reset();
+    document.getElementById("fEditId").value = x.id;
+    document.getElementById("fDate").value = x.date || ts();
+    document.getElementById("fTime").value = x.time || "";
+    document.getElementById("modalTitle").textContent = "编辑";
+    document.getElementById("fSubmit").textContent = "保存";
+    if (t === "txn") {
+      document.getElementById("txnFields").style.display = "block";
+      document.getElementById("evtFields").style.display = "none";
+      document.getElementById("fAmt").value = x.amount;
+      document.getElementById("fCat").value = x.category || "";
+      document.getElementById("fNote").value = x.note || "";
+      document.querySelectorAll("#typeToggle button").forEach(function(b) { b.className = b.dataset.t === x.type ? "ta" : "tn"; });
+    } else {
+      document.getElementById("txnFields").style.display = "none";
+      document.getElementById("evtFields").style.display = "block";
+      document.getElementById("fTitle").value = x.title || "";
+      document.getElementById("fEvtCat").value = x.category || "";
+      document.getElementById("fLoc").value = x.loc || "";
+      document.getElementById("fDesc").value = x.description || "";
+      document.querySelectorAll("#typeToggle button").forEach(function(b) { b.className = b.dataset.t === (t === "pln" ? "plan" : "event") ? "ta" : "tn"; });
+    }
+  }
+  // 类型切换（带分类刷新）
+  var eltypeToggle=document.getElementById("typeToggle");if(eltypeToggle)eltypeToggle.addEventListener("click", function(e) {
+    var btn = e.target.closest(".tt button");
+    if (!btn) return;
+    document.querySelectorAll("#typeToggle button").forEach(function(b) { b.className = b.dataset.t === btn.dataset.t ? "ta" : "tn"; });
+    if (btn.dataset.t === "event" || btn.dataset.t === "plan") {
+      document.getElementById("txnFields").style.display = "none";
+      document.getElementById("evtFields").style.display = "block";
+    } else {
+      document.getElementById("txnFields").style.display = "block";
+      document.getElementById("evtFields").style.display = "none";
+      document.getElementById("fCat").innerHTML = (btn.dataset.t === "income" ? CI : CE).map(function(c) { return "<option value=\"" + c + "\">" + c + "</option>"; }).join("");
+    }
+  });
+  // 账号管理
+  var elprofileBtn=document.getElementById("profileBtn");if(elprofileBtn)elprofileBtn.addEventListener("click", function() {
+    var ps = gp(), cur = gc();
+    var h = "";
+    ps.forEach(function(p) {
+      var isCur = p.id === cur;
+      h += "<div class=\"pli\"><span class=\"pn\">" + esc(p.name) + (isCur ? "<small>当前</small>" : "") + "</span>";
+      if (!isCur) h += "<span onclick=\"sc('"+p.id+"');location.reload()\" style=\"cursor:pointer;color:#2563eb;font-size:.82rem\">切换</span>";
+      if (ps.length > 1 && !isCur) h += "<span onclick=\"if(confirm('确定删除？')){var ps=gp().filter(function(x){return x.id!='"+p.id+"'});sp(ps);localStorage.removeItem('lsz_data_"+p.id+"');if(gc()=='"+p.id+"')sc(ps[0].id);location.reload()}\" style=\"color:#ef4444;cursor:pointer;font-size:.82rem;margin-left:6px\">\u2716</span>";
+      h += "</div>";
+    });
+    document.getElementById("profileList").innerHTML = h;
+    document.getElementById("profilePanel").classList.add("open");
+  });
+  var elprofilePanel=document.getElementById("profilePanel");if(elprofilePanel)elprofilePanel.addEventListener("click", function(e) {
+    if (e.target.classList.contains("pr")) document.getElementById("profilePanel").classList.remove("open");
+  });
+  var elbtnAddProfile=document.getElementById("btnAddProfile");if(elbtnAddProfile)elbtnAddProfile.addEventListener("click", function() {
+    var inp = document.getElementById("newProfileName");
+    if (!inp.value.trim()) return;
+    var id = gi();
+    var ps = gp();
+    ps.push({id:id, name:inp.value.trim(), createdAt:Date.now()});
+    sp(ps); sc(id); sd(id, {transactions:[], events:[], plans:[]});
+    location.reload();
+  });
+  var elbtnImport=document.getElementById("btnImport");if(elbtnImport)elbtnImport.addEventListener("click", function() { document.getElementById("fileInput").click(); });
+  var elfileInput=document.getElementById("fileInput");if(elfileInput)elfileInput.addEventListener("change", function(e) {
+    if (!e.target.files.length) return;
+    var r = new FileReader();
+    r.onload = function(ev) {
+      try {
+        var j = JSON.parse(ev.target.result);
+        if (j.data) { data = j.data; sd(data); ra(); alert("导入成功！"); }
+        else { alert("文件格式不对"); }
+      } catch(ex) { alert("导入失败：" + ex.message); }
+    };
+    r.readAsText(e.target.files[0]);
+  });
+});
+</script></body>
 </html>
