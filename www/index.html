@@ -124,10 +124,10 @@ function gp(){try{let d=localStorage.getItem(PK);return d?JSON.parse(d):[]}catch
 function sp(p){localStorage.setItem(PK,JSON.stringify(p))}
 function gc(){return localStorage.getItem(CK)||""}
 function sc(id){localStorage.setItem(CK,id)}
-function ep(){let ps=gp(),c=gc();if(ps.length===0){let id=Date.now().toString(36);ps.push({id,name:"默认账号",createdAt:Date.now()});sp(ps);sc(id);sd(id,{transactions:[],events:[],plans:[]})}else if(!c||!ps.find(p=>p.id===c)){sc(ps[0].id)}}
+function ep(){let ps=gp(),c=gc();if(ps.length===0){let id=Date.now().toString(36);ps.push({id,name:"默认账号",createdAt:Date.now()});sp(ps);sc(id);sd({transactions:[],events:[],plans:[]})}else if(!c||!ps.find(p=>p.id===c)){sc(ps[0].id)}}
 function dk(){return SK+"_"+gc()}
 function ld(){try{let d=localStorage.getItem(dk());return d?JSON.parse(d):{transactions:[],events:[],plans:[]}}catch{return{transactions:[],events:[],plans:[]}}}
-function sd(id,d){localStorage.setItem(dk(),JSON.stringify(d))}
+function sd(d){localStorage.setItem(dk(),JSON.stringify(d))}
 function gi(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6)}
 let data,view="timeline",ft="all",fm="",mm="add";
 function ts(){let d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
