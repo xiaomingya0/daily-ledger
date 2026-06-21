@@ -17,12 +17,14 @@ jobs:
       - name: Install Android SDK platform
         run: |
           echo y | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --sdk_root=$ANDROID_HOME "platforms;android-36"
+      - name: Install Gradle
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq gradle
       - name: Install Cordova
         run: npm install -g cordova
       - name: Build APK
         run: |
           cd daily-ledger-cordova
-          cordova platform add android --nofetch
+          cordova platform add android
           cordova build android
       - name: Upload APK
         uses: actions/upload-artifact@v4
